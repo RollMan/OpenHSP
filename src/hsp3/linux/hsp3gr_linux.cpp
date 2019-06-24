@@ -21,6 +21,7 @@
 #include "hsp3gr_linux.h"
 
 #ifndef MCP3008TEST
+#ifndef LUXTEST
 
 /*------------------------------------------------------------*/
 /*
@@ -42,6 +43,7 @@ extern int resY0, resY1;
 /*----------------------------------------------------------*/
 //					Raspberry Pi I2C support
 /*----------------------------------------------------------*/
+#endif //LUXTEST
 #ifdef HSPRASPBIAN
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
@@ -51,7 +53,7 @@ extern int resY0, resY1;
 
 static int i2cfd_ch[HSPI2C_CHMAX];
 
-static void I2C_Init( void )
+void I2C_Init( void )
 {
 	int i;
 	for(i=0;i<HSPI2C_CHMAX;i++) {
@@ -59,7 +61,7 @@ static void I2C_Init( void )
 	}
 }
 
-static void I2C_Close( int ch )
+void I2C_Close( int ch )
 {
 	if ( ( ch<0 )||( ch>=HSPI2C_CHMAX ) ) return;
 	if ( i2cfd_ch[ch] == 0 ) return;
@@ -68,7 +70,7 @@ static void I2C_Close( int ch )
 	i2cfd_ch[ch] = 0;
 }
 
-static void I2C_Term( void )
+void I2C_Term( void )
 {
 	int i;
 	for(i=0;i<HSPI2C_CHMAX;i++) {
@@ -76,7 +78,7 @@ static void I2C_Term( void )
 	}
 }
 
-static int I2C_Open( int ch, int adr )
+int I2C_Open( int ch, int adr )
 {
 	int fd;
 	unsigned char i2cAddress;
@@ -97,7 +99,7 @@ static int I2C_Open( int ch, int adr )
 	return 0;
 }
 
-static int I2C_ReadByte( int ch )
+int I2C_ReadByte( int ch )
 {
 	int res;
 	unsigned char data[8];
@@ -112,7 +114,7 @@ static int I2C_ReadByte( int ch )
 	return res;
 }
 
-static int I2C_ReadWord( int ch )
+int I2C_ReadWord( int ch )
 {
 	int res;
 	unsigned char data[8];
@@ -128,7 +130,7 @@ static int I2C_ReadWord( int ch )
 	return res;
 }
 
-static int I2C_WriteByte( int ch, int value, int length )
+int I2C_WriteByte( int ch, int value, int length )
 {
 	int res;
 	int len;
@@ -150,6 +152,7 @@ static int I2C_WriteByte( int ch, int value, int length )
 #endif
 
 #endif // MCP3008TEST
+#ifndef LUXTEST
 /*----------------------------------------------------------*/
 //					Raspberry Pi SPI support
 /*----------------------------------------------------------*/
@@ -1040,4 +1043,5 @@ void hsp3typeinit_cl_extfunc( HSP3TYPEINFO *info )
 	I2C_Init();
 #endif
 }
+#endif // LUXTEST
 #endif // MCP3008TEST
