@@ -35,6 +35,7 @@
 #include "../sysreq.h"
 //#include "../hsp3ext.h"
 #include "../../hsp3/strnote.h"
+#include "../../hsp3/linux/hsp3ext_sock.h"
 
 #include "../emscripten/appengine.h"
 
