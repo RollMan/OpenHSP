@@ -347,6 +347,21 @@ static int echo_file2( char *name, int value )
 
 const char *gpiod_appname = "hsp3dish";
 
+#ifdef RASPI_GPIO_DEVNAME
+    // A workdaround to stringify macro values by https://stackoverflow.com/a/196093
+    #define QUOTE(name) #name
+    #define STR(macro) QUOTE(macro)
+    char const * const HSPGPIO_DEVNAME = STR(RASPI_GPIO_DEVNAME);
+#else
+    #if defined(RASPBERRYPI6)
+        #error "not implemented"    // Just check if cpp conditions work.
+    #elif defined(RASPBERRYPI5)
+        char const * const HSPGPIO_DEVNAME = "/dev/gpiochip4";
+    #else  // Suppose prior to Raspberry Pi 4 and Raspberrt Pi 400.
+        char const * const HSPGPIO_DEVNAME = "/dev/gpiochip0";
+    #endif // RASPBERRYPI5
+#endif // RASPI_GPIO_DEVNAME
+
 static gpiod_chip *gchip;
 struct gpiod_line *gline;
 static int gpio_type[GPIO_MAX];
@@ -410,7 +425,7 @@ static int gpio_dir( int port, int *value )
 static void gpio_init( void )
 {
 	// GPIOデバイスを開く
-	gchip = gpiod_chip_open_lookup("");
+    gchip = gpiod_chip_open(HSPGPIO_DEVNAME);
 	if ( gchip == NULL ) {
 		printf("gpiod initalize failed.\r\n");
 	}
