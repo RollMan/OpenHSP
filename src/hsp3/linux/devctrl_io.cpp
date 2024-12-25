@@ -410,7 +410,7 @@ static int gpio_dir( int port, int *value )
 static void gpio_init( void )
 {
 	// GPIOデバイスを開く
-	gchip = gpiod_chip_open_lookup("");
+	gchip = gpiod_chip_open("/dev/gpiochip4");
 	if ( gchip == NULL ) {
 		printf("gpiod initalize failed.\r\n");
 	}
